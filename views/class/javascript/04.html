@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>【JavaScript】- Promise深度解析（二） | Ivan Chen</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="icon" href="/cll-blog/favicon.ico">
+    <meta name="description" content="永远充满活力的前行～">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    
+    <link rel="preload" href="/cll-blog/assets/css/0.styles.7c2944e4.css" as="style"><link rel="preload" href="/cll-blog/assets/js/app.b75f22a5.js" as="script"><link rel="preload" href="/cll-blog/assets/js/4.daddb1df.js" as="script"><link rel="preload" href="/cll-blog/assets/js/1.ef0066ea.js" as="script"><link rel="preload" href="/cll-blog/assets/js/21.f2b88ce9.js" as="script"><link rel="prefetch" href="/cll-blog/assets/js/10.b3a13d8b.js"><link rel="prefetch" href="/cll-blog/assets/js/11.fe07d50c.js"><link rel="prefetch" href="/cll-blog/assets/js/12.a9ff16d1.js"><link rel="prefetch" href="/cll-blog/assets/js/13.82d359c8.js"><link rel="prefetch" href="/cll-blog/assets/js/14.cfa27d08.js"><link rel="prefetch" href="/cll-blog/assets/js/15.abff44ee.js"><link rel="prefetch" href="/cll-blog/assets/js/16.62853ffe.js"><link rel="prefetch" href="/cll-blog/assets/js/17.04cb48af.js"><link rel="prefetch" href="/cll-blog/assets/js/18.7bb4c0c2.js"><link rel="prefetch" href="/cll-blog/assets/js/19.f3a32ef3.js"><link rel="prefetch" href="/cll-blog/assets/js/20.5211a042.js"><link rel="prefetch" href="/cll-blog/assets/js/22.672d632b.js"><link rel="prefetch" href="/cll-blog/assets/js/23.bcf2e811.js"><link rel="prefetch" href="/cll-blog/assets/js/24.8afa7d7b.js"><link rel="prefetch" href="/cll-blog/assets/js/25.b6007d08.js"><link rel="prefetch" href="/cll-blog/assets/js/26.7cb54d89.js"><link rel="prefetch" href="/cll-blog/assets/js/27.e7e77981.js"><link rel="prefetch" href="/cll-blog/assets/js/28.25e81466.js"><link rel="prefetch" href="/cll-blog/assets/js/29.e2f0bacb.js"><link rel="prefetch" href="/cll-blog/assets/js/30.ba397ca7.js"><link rel="prefetch" href="/cll-blog/assets/js/31.c64844aa.js"><link rel="prefetch" href="/cll-blog/assets/js/32.6d498130.js"><link rel="prefetch" href="/cll-blog/assets/js/33.7cb8ac08.js"><link rel="prefetch" href="/cll-blog/assets/js/34.63762ace.js"><link rel="prefetch" href="/cll-blog/assets/js/5.badafcf5.js"><link rel="prefetch" href="/cll-blog/assets/js/6.6143e972.js"><link rel="prefetch" href="/cll-blog/assets/js/7.d945cead.js"><link rel="prefetch" href="/cll-blog/assets/js/8.1c26169a.js"><link rel="prefetch" href="/cll-blog/assets/js/9.9f23389e.js"><link rel="prefetch" href="/cll-blog/assets/js/vendors~flowchart.570a8307.js">
+    <link rel="stylesheet" href="/cll-blog/assets/css/0.styles.7c2944e4.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-1156296a><div data-v-1156296a><div id="loader-wrapper" class="loading-wrapper" data-v-d48f4d20 data-v-1156296a data-v-1156296a><div class="loader-main" data-v-d48f4d20><div data-v-d48f4d20></div><div data-v-d48f4d20></div><div data-v-d48f4d20></div><div data-v-d48f4d20></div></div> <!----> <!----></div> <div class="password-shadow password-wrapper-out" style="display:none;" data-v-4e82dffc data-v-1156296a data-v-1156296a><h3 class="title" data-v-4e82dffc data-v-4e82dffc>Ivan Chen</h3> <p class="description" data-v-4e82dffc data-v-4e82dffc>永远充满活力的前行～</p> <label id="box" class="inputBox" data-v-4e82dffc data-v-4e82dffc><input type="password" value="" data-v-4e82dffc> <span data-v-4e82dffc>Konck! Knock!</span> <button data-v-4e82dffc>OK</button></label> <div class="footer" data-v-4e82dffc data-v-4e82dffc><span data-v-4e82dffc><i class="iconfont reco-theme" data-v-4e82dffc></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-4e82dffc>vuePress-theme-reco</a></span> <span data-v-4e82dffc><i class="iconfont reco-copyright" data-v-4e82dffc></i> <a data-v-4e82dffc><span data-v-4e82dffc>陈梁梁</span>
+            
+          <span data-v-4e82dffc>2020 - </span>
+          2021
+        </a></span></div></div> <div class="hide" data-v-1156296a><header class="navbar" data-v-1156296a><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/cll-blog/" class="home-link router-link-active"><img src="/cll-blog/logo.png" alt="Ivan Chen" class="logo"> <span class="site-name">Ivan Chen</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/cll-blog/" class="nav-link"><i class="iconfont reco-home"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cll-blog/categories/其他/" class="nav-link"><i class="undefined"></i>
+  其他
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/前端/" class="nav-link"><i class="undefined"></i>
+  前端
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/node/" class="nav-link"><i class="undefined"></i>
+  node
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/框架/" class="nav-link"><i class="undefined"></i>
+  框架
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/工具/" class="nav-link"><i class="undefined"></i>
+  工具
+</a></li></ul></div></div><div class="nav-item"><a href="/cll-blog/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><a href="/cll-blog/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间轴
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于我
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cll-blog/views/about/" class="nav-link"><i class="iconfont reco-account"></i>
+  关于我
+</a></li><li class="dropdown-item"><!----> <a href="https://github.com/cll18557528787" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-1156296a></div> <aside class="sidebar" data-v-1156296a><div class="personal-info-wrapper" data-v-828910c6 data-v-1156296a><img src="/cll-blog/avatar.jpg" alt="author-avatar" class="personal-img" data-v-828910c6> <h3 class="name" data-v-828910c6>
+    陈梁梁
+  </h3> <div class="num" data-v-828910c6><div data-v-828910c6><h3 data-v-828910c6>23</h3> <h6 data-v-828910c6>Articles</h6></div> <div data-v-828910c6><h3 data-v-828910c6>13</h3> <h6 data-v-828910c6>Tags</h6></div></div> <ul class="social-links" data-v-828910c6></ul> <hr data-v-828910c6></div> <nav class="nav-links"><div class="nav-item"><a href="/cll-blog/" class="nav-link"><i class="iconfont reco-home"></i>
+  首页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cll-blog/categories/其他/" class="nav-link"><i class="undefined"></i>
+  其他
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/前端/" class="nav-link"><i class="undefined"></i>
+  前端
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/JavaScript/" class="nav-link"><i class="undefined"></i>
+  JavaScript
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/node/" class="nav-link"><i class="undefined"></i>
+  node
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/框架/" class="nav-link"><i class="undefined"></i>
+  框架
+</a></li><li class="dropdown-item"><!----> <a href="/cll-blog/categories/工具/" class="nav-link"><i class="undefined"></i>
+  工具
+</a></li></ul></div></div><div class="nav-item"><a href="/cll-blog/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><a href="/cll-blog/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  时间轴
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-message"></i>
+      关于我
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/cll-blog/views/about/" class="nav-link"><i class="iconfont reco-account"></i>
+  关于我
+</a></li><li class="dropdown-item"><!----> <a href="https://github.com/cll18557528787" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-4e82dffc data-v-1156296a><h3 class="title" data-v-4e82dffc data-v-4e82dffc>【JavaScript】- Promise深度解析（二）</h3> <!----> <label id="box" class="inputBox" data-v-4e82dffc data-v-4e82dffc><input type="password" value="" data-v-4e82dffc> <span data-v-4e82dffc>Konck! Knock!</span> <button data-v-4e82dffc>OK</button></label> <div class="footer" data-v-4e82dffc data-v-4e82dffc><span data-v-4e82dffc><i class="iconfont reco-theme" data-v-4e82dffc></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-4e82dffc>vuePress-theme-reco</a></span> <span data-v-4e82dffc><i class="iconfont reco-copyright" data-v-4e82dffc></i> <a data-v-4e82dffc><span data-v-4e82dffc>陈梁梁</span>
+            
+          <span data-v-4e82dffc>2020 - </span>
+          2021
+        </a></span></div></div> <div data-v-1156296a><main class="page"><section><div class="page-title"><h1 class="title">【JavaScript】- Promise深度解析（二）</h1> <div data-v-1ff7123e><i class="iconfont reco-account" data-v-1ff7123e><span data-v-1ff7123e>陈梁梁</span></i> <i class="iconfont reco-date" data-v-1ff7123e><span data-v-1ff7123e>10/8/2020</span></i> <!----> <i class="tags iconfont reco-tag" data-v-1ff7123e><span class="tag-item" data-v-1ff7123e>JavaScript</span></i></div></div> <div class="theme-reco-content content__default"><blockquote><p>夯实基础，方能手到擒来</p></blockquote> <h2 id="分析一下实现promise需要哪些逻辑"><a href="#分析一下实现promise需要哪些逻辑" class="header-anchor">#</a> 分析一下实现Promise需要哪些逻辑</h2> <ul><li>Promise有三种状态，pending(进行中)、fulfilled(已完成)、reject(已失败)，外界无法改变其状态，且一旦状态改变就不会再变了</li> <li>实例化一个 Promise 需要传入一个 executor 函数 ，业务代码在 executor 函数中执行，另外 executor 函数接收两个参数 resolve 和 reject。resolve 和 reject 是 Promise 构造函数的内置函数</li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>new Promise((resolve,reject)=&gt;{
+	// do something
+})
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><ul><li>在 executor 函数中业务代码执行成功了，调用 resolve 函数，把 Promise 的状态变为已成功，另外通过参数把业务代码的执行成功的结果传递到 Promise 中</li> <li>在 executor 函数中业务代码执行失败了，调用 reject 函数，把 Promise 的状态变为已失败，另外通过参数把业务代码的执行失败的原因传递到 Promise 中</li> <li>实例方法 then 的第一个参数是业务代码执行成功的回调函数，第二个参数是业务代码执行失败的回调函数，当业务代码执行完毕后，会根据执行结果调用对应的回调函数，且这些回调函数接收业务代码的执行结果作为参数</li> <li>then方法可以链式调用，具有穿透性</li> <li>实例方法 catch 来添加业务代码执行失败的回调函数</li></ul> <p>那么下面就一一来实现 Promise 的功能</p> <h2 id="初步搭建"><a href="#初步搭建" class="header-anchor">#</a> 初步搭建</h2> <p>根据分析，首先我们需要完成这些功能：</p> <ul><li><p>Promise 构造函数接收 executor 函数作为参数，且在其中执行 executor 函数</p></li> <li><p>Promise 构造函数中有 resolve 和 reject 内置方法，并作为参数传递给 executor 函数</p></li> <li><p>设置个实例属性 status 来存储状态</p></li> <li><p>内置函数 resolve 可以把状态变为已成功，内置函数 reject 可以把状态变为已失败，且一旦状态改变就不会再变</p></li></ul> <div class="language- line-numbers-mode"><pre class="language-text"><code>// 这里使用了Symbol是为了防止外界其他原因改变了状态
+const Pending = Symbol('Pending');
+const Fulfilled = Symbol('Fulfilled');
+const Rejected= Symbol('Rejected');
+
+function Promise(excutor){
+	// 初始状态为pending
+	this.status = Pending;
+	const resolve = () =&gt; {  // 这里为了this的指向，使用了箭头函数，如果不用箭头函数，需要用变量存一下this
+		if(this.status === Pending){  // 只有在状态为pending时才可以发生改变
+			this.status = Fulfilled;
+		}
+	};
+	const reject = () =&gt; {
+		if(this.status === Pending){  // 只有在状态为pending时才可以发生改变
+			this.status = Rejected;
+		}
+	};
+	excutor(resolve,reject);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br></div></div><h2 id="初步实现then方法"><a href="#初步实现then方法" class="header-anchor">#</a> 初步实现then方法</h2> <p>按照上面对 then 实例方法的业务场景的简单分析，在 then 实例方法中调用回调函数时，还要把 executor 函数中业务代码的执行结果作为参数传递进去，那么要新增实例属性来存储业务代码的执行结果。另外执行成功的结果通过内置方法 resolve 的参数传入，其执行失败的原因通过内置方法 reject 的参数传入</p> <p>因为then方法是实例可调用的，所以then方法是在构造函数原型上的：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>// 这里使用了Symbol是为了防止外界其他原因改变了状态
+const Pending = Symbol('Pending');
+const Fulfilled = Symbol('Fulfilled');
+const Rejected= Symbol('Rejected');
+
+function Promise(excutor){
+	// 初始状态为pending
+	this.status = Pending;
+	this.value = undefined;
+	this.error = undefined;
+	const resolve = value =&gt; {  // 这里为了this的指向，使用了箭头函数，如果不用箭头函数，需要用变量存一下this
+		if(this.status === Pending){  // 只有在状态为pending时才可以发生改变
+			this.status = Fulfilled;
+			this.value = value;
+		}
+	};
+	const reject = value =&gt; {
+		if(this.status === Pending){  // 只有在状态为pending时才可以发生改变
+			this.status = Rejected;
+			this.error = value;
+		}
+	};
+	excutor(resolve,reject);
+};
+
+Promise.prototype.then = function(resolveCallback,rejectCallback){  // 这里为什么不用箭头函数，注意this指向
+	if(this.status === Fulfilled){
+		if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+			resolveCallback(this.value);
+		}
+	}
+	if(this.status === Rejected){
+		if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+			rejectCallback(this.error);
+		}
+	}
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br></div></div><p>初步实现了then方法，那么我来验证一下：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const promise = new Promise((resolve,reject)=&gt;{
+	resolve('执行成功');
+});
+
+promise.then(res=&gt;{
+	console.log(res);
+})
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br></div></div><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/537484fd0e174ab2acd30afb87b03ca4~tplv-k3u1fbpfcp-zoom-1.image" alt="控制台打印结果">
+控制台能打印出我们想要的结果，说明到目前为止，我们写的都没问题，但是接下来我们思考，如果我们的excutor是个执行异步方法的函数呢：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const promise = new Promise((resolve,reject)=&gt;{
+	setTimeout(()=&gt;{
+		resolve('执行成功');
+	},2000);
+});
+
+promise.then(res=&gt;{
+	console.log(res);
+})
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><p>结果可以发现，2秒后并没有打印出我们想要的结果，因为调用 then 实例方法时，Promise 的状态是 Pending ，虽然2秒后 Promise 的状态变为 Fulfilled ，但是 then 实例方法已经调用过了</p> <p>那么要怎么控制 then 实例方法中回调函数的执行时机。可以用发布订阅者的设计模式来实现。</p> <p>当调用 then 实例方法时，如果 Promise 的状态是 Pending 时，先将成功回调函数和失败回调函数分别存放起来，在 executor 函数中异步任务执行结束，触发内置方法 resolve 或 reject，在其中去依次调用这些回调函数。</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const Pending = Symbol('Pending');
+const Fulfilled = Symbol('Fulfilled');
+const Rejected= Symbol('Rejected');
+
+function Promise(excutor){
+	this.status = Pending;
+	this.value = undefined;
+	this.error = undefined;
+	this.onFulfilled = [];  //这里用数组来存放resolve时的回调
+	this.onRejected = []; //这里用数组来存放reject时的回调
+	const resolve = value =&gt; {
+		if(this.status === Pending){
+			this.status = Fulfilled;
+			this.value = value;
+			this.onFulfilled.forEach(fn =&gt; fn());
+		}
+	};
+	const reject = value =&gt; {
+		if(this.status === Pending){
+			this.status = Rejected;
+			this.error = value;
+			this.onRejected.forEach(fn =&gt; fn());
+		}
+	};
+	excutor(resolve,reject);
+};
+
+Promise.prototype.then = function(resolveCallback,rejectCallback){
+	if(this.status === Fulfilled){
+		if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+			resolveCallback(this.value);
+		}
+	}
+	if(this.status === Rejected){
+		if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+			rejectCallback(this.error);
+		}
+	}
+	//如果调用then方法的时候，状态还是pending，就先将回调保存起来
+	if(this.status === Pending){
+		if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+			this.onFulfilled.push(()=&gt;{
+				resolveCallback(this.value);
+			});
+		}
+		if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+			this.onRejected.push(()=&gt;{
+				rejectCallback(this.error)
+			});
+		}
+	}
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br></div></div><p>再进行实例化验证一下：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const promise = new Promise((resolve,reject)=&gt;{
+	setTimeout(()=&gt;{
+		resolve('执行成功');
+	},2000);
+});
+
+promise.then(res=&gt;{
+	console.log(res);
+})
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><p>结果控制台在2秒后能够成功打印出“执行成功”，说明目前我们的逻辑都正确，再测试一下reject的情况：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const promise = new Promise((resolve,reject)=&gt;{
+	setTimeout(()=&gt;{
+		reject('执行失败');
+	},2000);
+});
+
+promise.then(res=&gt;{
+	// do nothing
+},err=&gt;{
+	console.log(err)
+})
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br></div></div><p>控制台在2秒后能够成功打印出“执行失败”</p> <h2 id="then方法的微任务机制"><a href="#then方法的微任务机制" class="header-anchor">#</a> then方法的微任务机制</h2> <p>由于原生的 Promise 是V8引擎提供的微任务，我们无法还原V8引擎的实现，所以这里使用 setTimeout 模拟异步，所以原生的是微任务，这里是宏任务代替（如果你想实现 promise 的微任务，可以 mutationObserver 替代 seiTimeout 来实现微任务。这里只是模拟异步而已）</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>Promise.prototype.then = function(resolveCallback,rejectCallback){  
+	if(this.status === Fulfilled){
+		if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+			// 用setTimeout代替微任务
+			setTimeout(()=&gt;{
+				resolveCallback(this.value);
+			},0);
+		}
+	}
+	if(this.status === Rejected){
+		if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+			setTimeout(()=&gt;{
+				rejectCallback(this.error);
+			},0);
+		}
+	}
+	if(this.status === Pending){
+		if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+			this.onFulfilled.push(()=&gt;{
+				setTimeout(()=&gt;{
+					resolveCallback(this.value);
+				},0);
+			});
+		}
+		if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+			this.onRejected.push(()=&gt;{
+				setTimeout(()=&gt;{
+					rejectCallback(this.error);
+				},0);
+			});
+		}
+	}
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br></div></div><h2 id="then的链式调用"><a href="#then的链式调用" class="header-anchor">#</a> then的链式调用</h2> <p>实例方法 then 链式调用有两个要求：</p> <ul><li>在实例方法 then 后面可以直接使用实例方法 then</li> <li>在前面一个实例方法 then 返回一个值，不管是什么值，在后面一个实例方法 then 中都能获取到</li></ul> <p>既然要能链式调用，那么then中返回的肯定也是一个promise，把实例方法 then 返回的值 value，通过 resolve(value) 或 reject(value) 传递出去</p> <p>当然我们还需要一个专门处理then的函数，用来解决对实例方法then返回的值的类型做判断和对应处理：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>Promise.prototype.then = function(resolveCallback,rejectCallback){
+	let promise = new Promise((resolve,reject)=&gt;{
+		if(this.status === Fulfilled){
+			if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+				setTimeout(()=&gt;{
+					let x = resolveCallback(this.value);
+					handleValue(promise,x,resolve,reject);   // 这里用工具函数处理
+				},0);
+			}
+		}
+		if(this.status === Rejected){
+			if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+				setTimeout(()=&gt;{
+					let x = rejectCallback(this.error);
+					handleValue(promise,x,resolve,reject);
+				},0);
+			}
+		}
+		if(this.status === Pending){
+			if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+				this.onFulfilled.push(()=&gt;{
+					setTimeout(()=&gt;{
+						let x = resolveCallback(this.value);
+						handleValue(promise,x,resolve,reject);
+					},0);
+				});
+			}
+			if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+				this.onRejected.push(()=&gt;{
+					setTimeout(()=&gt;{
+						let x = rejectCallback(this.error);
+						handleValue(promise,x,resolve,reject);
+					},0);
+				});
+			}
+		}
+	})
+	return promise
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br></div></div><p>然后写一下这个handleValue工具函数：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const handleValue = (promise,x,resolve,reject)=&gt;{
+	// 如果自己循环调用自己
+	if(promise === x){
+		return reject(new TypeError('链式循环调用了'));
+	}
+	let once = false;   // 确保只传递出去一次值
+	if(typeof x === 'object' &amp;&amp; x !== null || typeof x === 'function'){
+		const then = x.then;
+		// 判断x是不是Promise
+		if(then &amp;&amp; typeof then === 'function'){
+			//调用then实例方法处理Promise执行结果
+			then.call(x,y=&gt;{
+				if(once) return
+				once = true;  // 防止Promise中Promise执行成功后又传递一个Promise过来，
+				handleValue(promise,y,resolve,reject);   // 递归解析
+			},r=&gt;{
+				if(once) return
+				once = true;
+				reject(r);
+			})
+		}else{
+			// 如果x是个普通对象，直接调用resolve(x)
+			resolve(x);
+		}
+	}else{
+		// 如果x是个原始值，直接调用resolve(x)
+		resolve(x);
+	}
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br></div></div><p>在上述代码中，判断typeof then === 'function'时其实是在判断返回的 x 是否为一个 Promise。如果没有 then 函数，x 即为普通值，直接返回 resolve(x)。如果有 then 函数，x 即为一个 Promise，就递归解析这个 Promise，直到 x 是一个普通值后作为最后的结果返回</p> <p>那么为什么用typeof then === 'function' 判断 x 是否为一个 Promise ，而不是用 x instanceof Promise 。 这是为了让 Promise 更具有通用性，所以一个 thenable 对象也可以看做是一个 Promise 。 thenable 对象就是一个拥有 then 方法的对象，如下代码所示例：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>let thenable = {
+    then: function(resolve, reject){
+    	resolve('执行成功')
+    }
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br></div></div><p>在 thenable.then 方法中通过 resolve 传递执行成功的结果。但是 thenable 对象不是通过 Promise 类 new 出来的，故不能通过 x instanceof Promise 来判断是不是一个 Promise</p> <h2 id="then的穿透"><a href="#then的穿透" class="header-anchor">#</a> then的穿透</h2> <p>如果要实现如下的逻辑呢？</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const p = new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+        resolve('&quot;执行成功&quot;')
+    }, 2000)
+
+})
+p.then().then(res =&gt;{
+    console.log(res)
+})
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><p>此时的then方法是需要具备穿透性的，后面的实例方法 then 依旧可以得到之前实例方法 then 返回的值，我们再来修改一下：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>Promise.prototype.then = function(resolveCallback,rejectCallback){
+	resolveCallback = typeof resolveCallback === 'function' ? resolveCallback : v =&gt; v;
+	rejectCallback = typeof rejectCallback ===  'function'  ? rejectCallback : err =&gt; {
+		throw err
+	};
+	let promise = new Promise((resolve,reject)=&gt;{
+		if(this.status === Fulfilled){
+			if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+				setTimeout(()=&gt;{
+					let x = resolveCallback(this.value);
+					handleValue(promise,x,resolve,reject); 
+				},0);
+			}
+		}
+		if(this.status === Rejected){
+			if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+				setTimeout(()=&gt;{
+					let x = rejectCallback(this.error);
+					handleValue(promise,x,resolve,reject);
+				},0);
+			}
+		}
+		if(this.status === Pending){
+			if(resolveCallback &amp;&amp; typeof resolveCallback === 'function'){
+				this.onFulfilled.push(()=&gt;{
+					setTimeout(()=&gt;{
+						let x = resolveCallback(this.value);
+						handleValue(promise,x,resolve,reject);
+					},0);
+				});
+			}
+			if(rejectCallback &amp;&amp; typeof rejectCallback === 'function'){
+				this.onRejected.push(()=&gt;{
+					setTimeout(()=&gt;{
+						let x = rejectCallback(this.error);
+						handleValue(promise,x,resolve,reject);
+					},0);
+				});
+			}
+		}
+	})
+	return promise
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br></div></div><h2 id="catch方法"><a href="#catch方法" class="header-anchor">#</a> catch方法</h2> <p>catch其实就是 then(null, rejectCallback)的别名</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>Promise.prototype.catch =  function(rejectCallback){
+	this.then(null,rejectCallback);
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br></div></div><h2 id="优化完整代码"><a href="#优化完整代码" class="header-anchor">#</a> 优化完整代码</h2> <p>处理一下内部错误等</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>const Fulfilled = Symbol('Fulfilled')
+const Rejected = Symbol('Rejected')
+const Pending = Symbol('Pending')
+
+const handleValue = (promise,x,resolve,reject) =&gt; {
+  if(promise === x){
+    return reject(new TypeError('检测到循环调用'))
+  }
+  let once = false
+  if(typeof x === 'object' &amp;&amp; x !== null || typeof x === 'function'){
+    const then = x.then
+    if(typeof then === 'function'){
+      then.call(x,y=&gt;{
+        if(once) return
+        once = true
+        handleValue(promise,y,resolve,reject)
+      },r=&gt;{
+        if(once) return
+        once = true
+        reject(r)
+      })
+    }else{
+      resolve(x)
+    }
+  }else{
+    resolve(x)
+  }
+}
+
+function Promise(excutor){
+  this.status = Pending
+  this.value = undefined
+  this.reason = undefined
+  this.onFulfilled = []
+  this.onRejected = []
+
+  const resolve = value =&gt; {
+    if(this.status === Pending){
+      this.status = Fulfilled
+      this.value = value
+      this.onFulfilled.forEach(fn =&gt; {
+        if(typeof fn === 'function'){
+          fn()
+        }
+      })
+    }
+  }
+
+  const reject = value =&gt; {
+    if(this.status === Pending){
+      this.status = Rejected
+      this.reason = value
+      this.onRejected.forEach(fn =&gt; {
+        if(typeof fn === 'function'){
+          fn()
+        }
+      })
+    }
+  }
+
+  try{
+    excutor(resolve,reject)
+  }
+  catch(err){
+    reject(err)
+  }
+}
+
+Promise.prototype.then = function(fulfilledCallback,rejectedCallback){
+  fulfilledCallback = typeof fulfilledCallback === 'function' ? fulfilledCallback : v =&gt; v
+  rejectedCallback = typeof rejectedCallback === 'function' ? rejectedCallback : err =&gt; {
+    throw err
+  }
+  let promise = new Promise((resolve,reject)=&gt;{
+    if(this.status === Pending){
+      if(fulfilledCallback &amp;&amp; typeof fulfilledCallback === 'function'){
+        this.onFulfilled.push(()=&gt;{
+          setTimeout(()=&gt;{
+            try{
+              let x = fulfilledCallback(this.value)
+              handleValue(promise,x,resolve,reject)
+            }catch(err){
+              reject(err)
+            }
+          },0)
+        })
+      }
+      if(rejectedCallback &amp;&amp; typeof rejectedCallback === 'function'){
+        this.onRejected.push(()=&gt;{
+          setTimeout(()=&gt;{
+            try{
+              let x = rejectedCallback(this.reason)
+              handleValue(promise,x,resolve,reject)
+            }catch(err){
+              reject(err)
+            }
+          })
+        })
+      }
+    }
+
+    if(this.status === Fulfilled){
+      if(fulfilledCallback &amp;&amp; typeof fulfilledCallback === 'function'){
+        setTimeout(()=&gt;{
+          try{
+            let x = fulfilledCallback(this.value)
+            handleValue(promise,x,resolve,reject)
+          }catch(err){
+            reject(err)
+          }
+        },0)
+      }
+    }
+
+    if(this.status === Rejected){
+      if(rejectedCallback &amp;&amp; typeof rejectedCallback === 'function'){
+        setTimeout(()=&gt;{
+          try{
+            let x = rejectedCallback(this.reason)
+            handleValue(promise,x,resolve,reject)
+          }catch(err){
+            reject(err)
+          }
+        })
+      }
+    }
+  }) 
+  return promise
+}
+
+Promise.prototype.catch = function(rejectCallback){
+  this.then(null,rejectCallback)
+}
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br></div></div><p>那么对Promise和他的实例方法then和catch的解析，我们就到这了，接下来我们会对他的静态方法再做具体的分析</p></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div> <ul class="side-bar sub-sidebar-wrapper" style="width:12rem;" data-v-70334359><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#分析一下实现promise需要哪些逻辑" class="sidebar-link reco-side-分析一下实现promise需要哪些逻辑" data-v-70334359>分析一下实现Promise需要哪些逻辑</a></li><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#初步搭建" class="sidebar-link reco-side-初步搭建" data-v-70334359>初步搭建</a></li><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#初步实现then方法" class="sidebar-link reco-side-初步实现then方法" data-v-70334359>初步实现then方法</a></li><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#then方法的微任务机制" class="sidebar-link reco-side-then方法的微任务机制" data-v-70334359>then方法的微任务机制</a></li><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#then的链式调用" class="sidebar-link reco-side-then的链式调用" data-v-70334359>then的链式调用</a></li><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#then的穿透" class="sidebar-link reco-side-then的穿透" data-v-70334359>then的穿透</a></li><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#catch方法" class="sidebar-link reco-side-catch方法" data-v-70334359>catch方法</a></li><li class="level-2" data-v-70334359><a href="/cll-blog/views/class/javascript/04.html#优化完整代码" class="sidebar-link reco-side-优化完整代码" data-v-70334359>优化完整代码</a></li></ul></main> <!----></div></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div></div></div>
+    <script src="/cll-blog/assets/js/app.b75f22a5.js" defer></script><script src="/cll-blog/assets/js/4.daddb1df.js" defer></script><script src="/cll-blog/assets/js/1.ef0066ea.js" defer></script><script src="/cll-blog/assets/js/21.f2b88ce9.js" defer></script>
+  </body>
+</html>
